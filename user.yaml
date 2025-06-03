@@ -1,11 +1,11 @@
 - name: user
   hosts: user
   become: yes
-  tasks: 
+  tasks:
   - name: disable old nodejs and enable nodejs:18
     ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:18 -y
 
-  - name: install nodejs-18
+  - name: Install nodejs
     ansible.builtin.dnf:
       name: nodejs
       state: present
@@ -14,17 +14,12 @@
     ansible.builtin.user:
       name: roboshop
 
-  - name: create roboshop directory
+  - name: Recursively remove app directory
     ansible.builtin.file:
-      path: /tmp
-      state: directory
-    
-  - name: download user application
-    ansible.builtin.get_url:
-      url: https://roboshop-builds.s3.amazonaws.com/user.zip
-      dest: /tmp
-
-   - name: create app directory
+      path: /app
+      state: absent
+      
+  - name: create app directory
     ansible.builtin.file:
       path: /app
       state: directory
