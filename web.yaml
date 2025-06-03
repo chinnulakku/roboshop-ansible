@@ -17,10 +17,10 @@
       path: /usr/share/nginx/html
       state: directory
 
-- name: Download web app
-  ansible.builtin.get_url:
-    url: https://roboshop-builds.s3.amazonaws.com/web.zip
-    dest: /tmp
+  - name: Download web app
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/web.zip
+      dest: /tmp
 
 - name: Extract appliaction
   ansible.builtin.unarchive:
