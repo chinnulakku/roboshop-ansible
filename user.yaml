@@ -2,8 +2,8 @@
   hosts: user
   become: yes
   tasks: 
-  - name: disable old nodejs -y, enable new nodejs:18 -y
-    ansible.builtin.shell: dnf module disable nodejs:18 -y
+  - name: disable old nodejs and enable nodejs:18
+    ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:18 -y
 
   - name: install nodejs-18
     ansible.builtin.dnf:
