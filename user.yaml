@@ -16,7 +16,7 @@
 
   - name: create roboshop directory
     ansible.builtin.file:
-    - path: /tmp
+      path: /tmp
       state: directory
     
   - name: download user application
