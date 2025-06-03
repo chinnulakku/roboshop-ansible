@@ -9,8 +9,8 @@
   
   - name: remove html directory
     ansible.built.file:
-    path: /usr/share/nginx/html
-    state: absent
+      path: /usr/share/nginx/html
+      state: absent
 
   - name: create html directory
     ansible.builtin.file:
@@ -38,5 +38,3 @@
   - name: nginx
     state: restarted
     enabled: yes
-    
-
