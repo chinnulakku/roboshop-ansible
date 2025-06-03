@@ -4,7 +4,7 @@
   tasks: 
   - name: install remi release
     ansible.builtin.dnf:
-      name: https://rpms.remirepo.net/enterprise/remi-release-8.10 https://rpms.remirepo.net/enterprise/remi-release-8.10 
+      name: https://rpms.remirepo.net/enterprise/remi-release-8.10 
       state: present
       disable_gpg_check: true
 
