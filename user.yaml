@@ -1,0 +1,76 @@
+- name: user
+  hosts: user
+  become: yes
+  tasks: 
+  - name: disable old nodejs -y, enable new nodejs:18 -y
+    ansible.builtin.shell: dnf module disable nodejs:18 -y
+
+  - name: Install nodejs-18
+    ansible.builtin.dnf:
+    - name: nodejs
+      state: present1
+
+  - name: create roboshop user
+    ansible.builtin.user:
+    name: roboshop
+
+  - name: create roboshop directory
+    ansible.builtin.file:
+    - path: /tmp
+      state: directory
+    
+  - name: download user application
+    ansible.builtin.get_url:
+      url: https://roboshop-builds.s3.amazonaws.com/user.zip
+      dest: /tmp
+
+  - name: extract user application
+    ansible.builtin.unarchive:
+      src: /tmp/user.zip
+      dest: /app
+      remote_src: yes
+  
+  - name: Install dependencies
+    ansible.builtin.command: npm install
+    args:
+      chdir: /app
+
+  - name: copy user service
+    ansible.builtin.copy:
+      src: user.service
+      dest: /etc/systemd/system/user.service
+
+  - name: deamon reload and start
+    ansible.builtin.systemd_service:
+    daemon_reload: yes
+  
+  # let's start after the data is loaded 
+
+  - name: Copy mongodb repo
+    ansible.builtin.copy:
+      src: mongodb.repo
+      dest: /etc/yum.repos.d/mongodb.repo
+    
+  - name: Install mongodb client
+    ansible.builtin.package:
+      name: mongodb-org-shell
+      state: present
+  
+  - name: get the categories count
+    anisble.builtin.command: mongo --host mongodb.sudhaaru676.online
+    register: product_count
+
+  # - name: print the count
+  #   ansible.builtin.debug:
+  #     msg: "product count: {{product_count}}"
+
+  - name: load user data
+    ansible.builtin.command: mongo --host mongodb.sudhaaru676.online
+    when: product_count.stdout == 0
+  
+  - name: start and enable user
+    ansible.builtin.service:
+      name: user
+      state: restarted
+      enabled: yes
+      
