@@ -2,29 +2,34 @@
   hosts: cart
   become: yes
   tasks:
-  - name: disable old nodejs, enable new nodejs
-    ansible.builtin.shell: dnf module enable nodejs:18 -y
-  
+  - name: disable old nodejs and enable nodejs:18
+    ansible.builtin.shell: dnf module disable nodejs -y ; dnf module enable nodejs:18 -y
+
   - name: Install nodejs
     ansible.builtin.dnf:
       name: nodejs
       state: present
 
-  - name: create roboshop cart
+  - name: create roboshop user
     ansible.builtin.user:
       name: roboshop
-  
-  - name: Create roboshop directory
+
+  - name: Recursively remove app directory
+    ansible.builtin.file:
+      path: /app
+      state: absent
+      
+  - name: create app directory
     ansible.builtin.file:
       path: /app
       state: directory
 
-  - name: download cart appliaction 
+  - name: download cart application
     ansible.builtin.get_url:
-      url: https://roboshop-builds.s3.amazonaws.com/cart.zip
-      dest: /tmp
+      url: http://roboshop-builds.s3.amazonaws.com/cart.zip
+      dest: /tmp 
 
-  - name: extract cart appliaction
+  - name: extract cart application
     ansible.builtin.unarchive:
       src: /tmp/cart.zip
       dest: /app
@@ -32,31 +37,20 @@
 
   - name: Install dependencies
     ansible.builtin.command: npm install
-    args: 
+    args:
       chdir: /app
 
-  - name: copy cart service
+  - name: Copy cart service
     ansible.builtin.copy:
       src: cart.service
       dest: /etc/systemd/system/cart.service
 
- -  name: deamon reload  and start
+  - name: deamon reload and start
     ansible.builtin.systemd_service:
       daemon_reload: true
 
-  #let's start after the data is loaded 
-
-  - name: copy mongodb repo
-    ansible.builtin.copy:
-      src: mongodb.repo
-      dest: /etc/yum.repos.d/mongodb.repo
-
-  - name: Install mongodb client
-    ansible.builtin.package:
-      name: mongodb-org-shell
-      state: present 
-
-  - name: 
-
-
-
+  - name: start and enable cart
+    ansible.builtin.service:
+      name: cart
+      state: restarted
+      enabled: yes
