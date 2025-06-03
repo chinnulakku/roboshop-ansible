@@ -1,10 +1,10 @@
-- name: install redis component
+- name: Install redis component
   hosts: redis
   become: yes
   tasks: 
-  - name: install remi release
+  - name: Install remi release
     ansible.builtin.dnf:
-      name: https://repos.remirepo.net/enterprise/remi-release-8.rem
+      name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm 
       state: present
 
   - name: enable redis
