@@ -7,7 +7,7 @@
 
   - name: Install nodejs-18
     ansible.builtin.dnf:
-    - name: nodejs
+      name: nodejs
       state: present1
 
   - name: create roboshop user
@@ -66,7 +66,7 @@
 
   - name: load user data
     ansible.builtin.command: mongo --host mongodb.sudhaaru676.online < /app/schema/user.js
-    
+
     when: user_count.stdout == "0" # keep double quotes
   
   - name: start and enable user
