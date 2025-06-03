@@ -57,8 +57,8 @@
       state: present
   
   - name: get the categories count
-    anisble.builtin.command: mongo --host mongodb.sudhaaru676.online --quiet --eval 'db = db.getSiblingDB("user"); db.products.count()' 
-      register: user_count
+    ansible.builtin.command: mongo --host mongodb.sudhaaru676.online --quiet --eval 'db = db.getSiblingDB("user"); db.products.count()' 
+    register: user_count
 
   # - name: print the count
   #   ansible.builtin.debug:
@@ -66,7 +66,7 @@
 
   - name: load user data
     ansible.builtin.command: mongo --host mongodb.sudhaaru676.online < /app/schema/user.js
-      when: user_count.stdout == "0" # keep double quotes
+    when: user_count.stdout == "0" # keep double quotes
   
   - name: start and enable user
     ansible.builtin.service:
