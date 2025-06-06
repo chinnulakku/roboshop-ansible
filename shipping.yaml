@@ -68,6 +68,6 @@
 
   - name: load cities data
     ansible.builtin.command: mysql.sudhaaru676.online -uroot -p{{mysql_password}}  < /app/schema/shipping.sql
-    when: schema.stdout != "1"
+    when: schema.stdout == "0"
 
                                                                                                                                                                                                                                
