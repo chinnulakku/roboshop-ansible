@@ -1,4 +1,4 @@
-- name: install shipping
+- name: install shipping component
   hosts: shippping
   become: yes
   vars: 
